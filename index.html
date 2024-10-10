@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全屏视频播放</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    #container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+    }
+
+    video {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        object-fit: contain;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        object-position: top; /* 确保视频的上半部分显示 */
+    }
+
+    #video_controls {
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%); 
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    #video_controls button {
+        display: inline-block;
+        padding: 10px 20px;
+        margin-bottom: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #fff;
+        border: none;
+        border-radius: 5px;
+    }
+
+    #video_controls button:last-child {
+        margin-bottom: 0;
+    }
+
+    /* 字幕样式 */
+    ::cue {
+        font-size: 20px; /* 字体大小 */
+        color: #ffffff; /* 字体颜色改为白色，确保可见 */
+        text-shadow: 0px 0px 2px #000000; /* 文本阴影 */
+        background-color: rgba(0, 0, 0, 0.5); /* 背景颜色 */
+        padding: 4px; /* 内边距 */
+        position: absolute; /* 绝对定位 */
+        bottom: 10px; /* 距离底部10px */
+        left: 50%; /* 水平居中 */
+        transform: translateX(-50%); /* 向左移动50%以居中 */
+        width: 80%; /* 宽度为容器的80% */
+        text-align: center; /* 文本居中 */
+    }
+</style>
+</head>
+<body>
+<div id="container">
+    <video id="background_video" autoplay muted>
+        <!-- 替换下面的视频链接为你的视频文件链接 -->
+        <source src="默认女.webm" type="video/webm">
+        <!-- 添加字幕文件 -->
+        <track src="subtitles.vtt" kind="captions" srclang="zh" label="中文" default>
+        Your browser does not support the video tag.
+    </video>
+    <div id="video_controls">
+        <button id="mute">静音</button>
+        <button id="pause">暂停</button>
+        <button id="replay">重播</button>
+        <button id="fast_forward">快进 10 秒</button>
+        <button id="rewind">倒退 10 秒</button> <!-- 新增倒退按钮 -->
+    </div>
+</div>
+
+<script>
+    var video = document.querySelector('video'),
+        container = document.querySelector('#container'),
+        muteButton = document.getElementById('mute'),
+        pauseButton = document.getElementById('pause'),
+        replayButton = document.getElementById('replay'),
+        fastForwardButton = document.getElementById('fast_forward'),
+        rewindButton = document.getElementById('rewind'); // 新增倒退按钮的变量
+    
+    var setVideoDimensions = function () {
+        var w = video.videoWidth,
+            h = video.videoHeight,
+            videoRatio = (w / h).toFixed(2),
+            containerStyles = window.getComputedStyle(container),
+            minW = parseInt(containerStyles.getPropertyValue('width')),
+            minH = parseInt(containerStyles.getPropertyValue('height')),
+            widthRatio = minW / w,
+            heightRatio = minH / h;
+    
+        var newWidth, newHeight;
+        if (widthRatio > heightRatio) {
+            newWidth = minW;
+            newHeight = Math.ceil(newWidth / videoRatio);
+        } else {
+            newHeight = minH;
+            newWidth = Math.ceil(newHeight * videoRatio);
+        }
+    
+        video.style.width = newWidth + 'px';
+        video.style.height = newHeight + 'px';
+    };
+    
+    video.addEventListener('loadedmetadata', setVideoDimensions);
+    window.addEventListener('resize', setVideoDimensions);
+    
+    // 尝试播放视频
+    function playVideo() {
+        if (video.paused) {
+            video.play().then(() => {
+                // 自动播放开始
+            }).catch(error => {
+                // 自动播放失败
+                console.error('视频自动播放失败:', error);
+            });
+        }
+    }
+    
+    window.addEventListener('load', playVideo);
+    
+    // 静音按钮事件
+    muteButton.addEventListener('click', function () {
+        if (video.muted) {
+            video.muted = false;
+            muteButton.textContent = '静音';
+        } else {
+            video.muted = true;
+            muteButton.textContent = '取消静音';
+        }
+    });
+    
+    // 暂停按钮事件
+    pauseButton.addEventListener('click', function () {
+        if (video.paused) {
+            video.play();
+            pauseButton.textContent = '暂停';
+        } else {
+            video.pause();
+            pauseButton.textContent = '播放';
+        }
+    });
+    
+    // 重播按钮事件
+    replayButton.addEventListener('click', function () {
+        video.currentTime = 0;
+        video.play();
+    });
+    
+    // 快进按钮事件
+    fastForwardButton.addEventListener('click', function () {
+        video.currentTime += 10; // 快进10秒
+    });
+    
+    // 新增倒退按钮事件
+    rewindButton.addEventListener('click', function () {
+        video.currentTime -= 10; // 倒退10秒
+    });
+    
+    // 视频播放完成事件
+    video.addEventListener('ended', function () {
+        video.pause(); // 视频播放完成时暂停
+        video.currentTime = 0;
+    });
+    
+    // 更新按钮位置
+    window.addEventListener('resize', function () {
+        var containerStyles = window.getComputedStyle(container);  
+        var middlePosition = parseInt(containerStyles.getPropertyValue('height')) / 2 + 'px';
+        var videoControls = document.getElementById('video_controls'); 
+        videoControls.style.top = middlePosition; 
+    });
+    
+    // 调整视频方向
+    function adjustVideoForOrientation() {
+        if (window.innerWidth > window.innerHeight) {
+            // 横屏模式
+            video.style.objectPosition = 'top';
+        } else {
+            // 竖屏模式
+            video.style.objectPosition = 'center';
+        }
+    }
+    
+    // 添加事件监听器
+    window.addEventListener('load', adjustVideoForOrientation);
+    window.addEventListener('resize', adjustVideoForOrientation);
+    
+    // 初始调整
+    adjustVideoForOrientation();
+    </script>
+</body>
+</html>
