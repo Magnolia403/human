@@ -149,13 +149,8 @@
     
     // 静音按钮事件
     muteButton.addEventListener('click', function () {
-        if (video.muted) {
-            video.muted = false;
-            muteButton.textContent = '静音';
-        } else {
-            video.muted = true;
-            muteButton.textContent = '取消静音';
-        }
+        video.muted = !video.muted; // 切换静音状态
+        muteButton.textContent = video.muted ? '取消静音' : '静音'; // 更新按钮文本
     });
     
     // 暂停按钮事件
