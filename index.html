@@ -71,8 +71,16 @@
 </head>
 <body>
 <div id="container">
-    <video id="background_video" autoplay loop muted playsinline>
-        <source src="默认女.webm" type="video/webm">
+    <video id="background_video" 
+           autoplay 
+           loop 
+           muted 
+           webkit-playsinline 
+           playsinline 
+           x5-video-player-type="h5" 
+           x5-video-player-fullscreen="true" 
+           x5-video-orientation="portrait"
+           src="默认女.webm" type="video/webm">
         Your browser does not support the video tag.
     </video>
     <div id="video_controls">
@@ -128,6 +136,10 @@
             video.currentTime = 0;
         }
     });
+    document.addEventListener('WeixinJSBridgeReady', function () {
+        var video = document.getElementById('background_video');
+        video.play();
+    }, false);
 </script>
 </body>
 </html>
