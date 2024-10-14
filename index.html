@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>全屏视频播放</title>
+<title>视频播放</title>
 <style>
     * {
         margin: 0;
@@ -38,20 +38,16 @@
     }
 
     video {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        max-width: 100%;
+        max-height: 100%;
         object-fit: contain;
-        width: auto;
-        height: 100%; /* 确保视频高度与屏幕一致 */
     }
 
     #video_controls {
-        position: absolute;
+        position: fixed;
         top: 50%;
         right: 20px;
-        transform: translateY(-50%); 
+        transform: translateY(-50%);
         z-index: 100;
         display: flex;
         flex-direction: column;
@@ -59,7 +55,6 @@
     }
 
     #video_controls button {
-        display: inline-block;
         padding: 10px 20px;
         margin-bottom: 10px;
         font-size: 16px;
@@ -77,7 +72,6 @@
 <body>
 <div id="container">
     <video id="background_video" autoplay muted>
-        <!-- 替换下面的视频链接为你的视频文件链接 -->
         <source src="默认女.webm" type="video/webm">
         Your browser does not support the video tag.
     </video>
@@ -86,36 +80,24 @@
         <button id="pause">暂停</button>
         <button id="replay">重播</button>
         <button id="fast_forward">快进 10 秒</button>
-        <button id="rewind">倒退 10 秒</button> <!-- 新增倒退按钮 -->
+        <button id="rewind">倒退 10 秒</button>
     </div>
 </div>
 
 <script>
-    var video = document.querySelector('video'),
-        container = document.querySelector('#container'),
+    var video = document.getElementById('background_video'),
         muteButton = document.getElementById('mute'),
         pauseButton = document.getElementById('pause'),
         replayButton = document.getElementById('replay'),
         fastForwardButton = document.getElementById('fast_forward'),
-        rewindButton = document.getElementById('rewind'); // 新增倒退按钮的变量
-    
-    // 视频播放完成事件
-    video.addEventListener('ended', function () {
-        video.pause(); // 视频播放完成时暂停
-        video.currentTime = 0;
-    });
-    
+        rewindButton = document.getElementById('rewind');
+
     // 静音按钮事件
     muteButton.addEventListener('click', function () {
-        if (video.muted) {
-            video.muted = false;
-            muteButton.textContent = '静音';
-        } else {
-            video.muted = true;
-            muteButton.textContent = '取消静音';
-        }
+        video.muted = !video.muted;
+        muteButton.textContent = video.muted ? '取消静音' : '静音';
     });
-    
+
     // 暂停按钮事件
     pauseButton.addEventListener('click', function () {
         if (video.paused) {
@@ -126,40 +108,26 @@
             pauseButton.textContent = '播放';
         }
     });
-    
+
     // 重播按钮事件
     replayButton.addEventListener('click', function () {
         video.currentTime = 0;
         video.play();
     });
-    
+
     // 快进按钮事件
     fastForwardButton.addEventListener('click', function () {
-        video.currentTime += 10; // 快进10秒
+        video.currentTime += 10;
     });
-    
-    // 新增倒退按钮事件
+
+    // 倒退按钮事件
     rewindButton.addEventListener('click', function () {
-        video.currentTime -= 10; // 倒退10秒
-    });
-    
-    // 初始调整视频方向
-    function adjustVideoForOrientation() {
-        if (window.innerWidth > window.innerHeight) {
-            // 横屏模式
-            video.style.objectPosition = 'top';
+        if (video.currentTime > 10) {
+            video.currentTime -= 10;
         } else {
-            // 竖屏模式
-            video.style.objectPosition = 'center';
+            video.currentTime = 0;
         }
-    }
-    
-    // 添加事件监听器
-    window.addEventListener('load', adjustVideoForOrientation);
-    window.addEventListener('resize', adjustVideoForOrientation);
-    
-    // 初始调整
-    adjustVideoForOrientation();
+    });
 </script>
 </body>
 </html>
