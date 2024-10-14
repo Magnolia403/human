@@ -3,94 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Video Player with Custom Controls</title>
+<title>Simple Mobile Video Player</title>
 <style>
-  body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #000;
-  }
-  #videoContainer {
-    position: relative;
-    width: 100%;
-    max-width: 640px; /* Adjust this value based on your video aspect ratio */
-    margin: auto;
-  }
-  #videoPlayer {
+  video {
     width: 100%;
     height: auto;
-    /* Hide default controls */
-  }
-  .controls {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transform: translateY(-50%);
-    padding: 10px;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-    z-index: 10;
-  }
-  .control-button {
-    margin: 5px;
-    padding: 10px;
-    background-color: #fff;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
   }
 </style>
 </head>
 <body>
 
-<div id="videoContainer">
-  <video id="videoPlayer">
-    <source src="默认女.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-  <div class="controls">
-    <button class="control-button" id="playPauseBtn">播放/暂停</button>
-    <button class="control-button" id="muteBtn">静音</button>
-    <button class="control-button" id="forwardBtn">快进5s</button>
-    <button class="control-button" id="rewindBtn">后退5s</button>
-  </div>
-</div>
-
-<script>
-  const videoPlayer = document.getElementById('videoPlayer');
-  const playPauseBtn = document.getElementById('playPauseBtn');
-  const muteBtn = document.getElementById('muteBtn');
-  const forwardBtn = document.getElementById('forwardBtn');
-  const rewindBtn = document.getElementById('rewindBtn');
-
-  playPauseBtn.addEventListener('click', () => {
-    if (videoPlayer.paused) {
-      videoPlayer.play();
-    } else {
-      videoPlayer.pause();
-    }
-  });
-
-  muteBtn.addEventListener('click', () => {
-    videoPlayer.muted = !videoPlayer.muted;
-  });
-
-  forwardBtn.addEventListener('click', () => {
-    videoPlayer.currentTime += 5;
-  });
-
-  rewindBtn.addEventListener('click', () => {
-    videoPlayer.currentTime -= 5;
-  });
-</script>
+<video controls>
+  <source src="默认女.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 </body>
 </html>
