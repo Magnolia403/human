@@ -3,113 +3,93 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>背景视频播放</title>
+<title>Video Player with Custom Controls</title>
 <style>
-    * {
-        margin: 0;
-        padding: 0;
-    }
-
-    html, body {
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-    }
-
-    /* 渐变色背景 */
-    html {
-        background: radial-gradient(circle, #E2E2E2 0%, #FFFFFF 48.78%, #CCCFD1 100%);
-    }
-
-    #video-background {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-    }
-
-    video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    #video_controls {
-        position: fixed;
-        top: 50%;
-        right: 20px;
-        transform: translateY(-50%);
-        z-index: 100;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-    }
-
-    #video_controls button {
-        padding: 10px 20px;
-        margin-bottom: 10px;
-        font-size: 16px;
-        cursor: pointer;
-        background-color: #fff;
-        border: none;
-        border-radius: 5px;
-    }
-
-    #video_controls button:last-child {
-        margin-bottom: 0;
-    }
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+  }
+  #videoContainer {
+    position: relative;
+    width: 100%;
+    max-width: 640px; /* Adjust this value based on your video aspect ratio */
+    margin: auto;
+  }
+  #videoPlayer {
+    width: 100%;
+    height: auto;
+    /* Hide default controls */
+  }
+  .controls {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(-50%);
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    z-index: 10;
+  }
+  .control-button {
+    margin: 5px;
+    padding: 10px;
+    background-color: #fff;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
 
-<div id="video-background">
-    <video id="background_video" loop muted>
-        <source src="默认女.webm" type="video/webm">
-        Your browser does not support the video tag.
-    </video>
-</div>
-<div id="video_controls">
-    <button id="play">播放</button>
-    <button id="pause">暂停</button>
-    <button id="replay">重播</button>
-    <button id="fast_forward">快进 10 秒</button>
-    <button id="rewind">倒退 10 秒</button>
+<div id="videoContainer">
+  <video id="videoPlayer">
+    <source src="默认女.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <div class="controls">
+    <button class="control-button" id="playPauseBtn">播放/暂停</button>
+    <button class="control-button" id="muteBtn">静音</button>
+    <button class="control-button" id="forwardBtn">快进5s</button>
+    <button class="control-button" id="rewindBtn">后退5s</button>
+  </div>
 </div>
 
 <script>
-    var video = document.getElementById('background_video');
-    var playButton = document.getElementById('play');
-    var pauseButton = document.getElementById('pause');
-    var replayButton = document.getElementById('replay');
-    var fastForwardButton = document.getElementById('fast_forward');
-    var rewindButton = document.getElementById('rewind');
+  const videoPlayer = document.getElementById('videoPlayer');
+  const playPauseBtn = document.getElementById('playPauseBtn');
+  const muteBtn = document.getElementById('muteBtn');
+  const forwardBtn = document.getElementById('forwardBtn');
+  const rewindBtn = document.getElementById('rewindBtn');
 
-    playButton.addEventListener('click', function () {
-        video.play();
-    });
+  playPauseBtn.addEventListener('click', () => {
+    if (videoPlayer.paused) {
+      videoPlayer.play();
+    } else {
+      videoPlayer.pause();
+    }
+  });
 
-    pauseButton.addEventListener('click', function () {
-        video.pause();
-    });
+  muteBtn.addEventListener('click', () => {
+    videoPlayer.muted = !videoPlayer.muted;
+  });
 
-    replayButton.addEventListener('click', function () {
-        video.currentTime = 0;
-        video.play();
-    });
+  forwardBtn.addEventListener('click', () => {
+    videoPlayer.currentTime += 5;
+  });
 
-    fastForwardButton.addEventListener('click', function () {
-        video.currentTime += 10;
-    });
-
-    rewindButton.addEventListener('click', function () {
-        if (video.currentTime > 10) {
-            video.currentTime -= 10;
-        } else {
-            video.currentTime = 0;
-        }
-    });
+  rewindBtn.addEventListener('click', () => {
+    videoPlayer.currentTime -= 5;
+  });
 </script>
 
 </body>
